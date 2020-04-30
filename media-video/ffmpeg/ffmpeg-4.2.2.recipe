@@ -63,6 +63,7 @@ if [ "$effectiveTargetArchitecture" != x86_gcc2 ]; then
 	REQUIRES+="
 		lib:libopenmpt$secondaryArchSuffix
 		lib:libvpx$secondaryArchSuffix
+		lib:libx264$secondaryArchSuffix
 		"
 fi
 CONFLICTS="
@@ -155,6 +156,7 @@ if [ "$effectiveTargetArchitecture" != x86_gcc2 ]; then
 	BUILD_REQUIRES+="
 		devel:libopenmpt$secondaryArchSuffix
 		devel:libvpx$secondaryArchSuffix
+		devel:libx264$secondaryArchSuffix
 		"
 fi
 BUILD_PREREQUIRES="
@@ -225,7 +227,7 @@ BUILD()
 		export CFLAGS="-isystem$(pwd) -isystem$(pwd)/os -isystem$(pwd)/config"
 		export LDFLAGS="$baseLDFLAGS $(pwd)/gcc_runtime.o"
 	else
-		extraArgs="--enable-libvpx --enable-libopenmpt"
+		extraArgs="--enable-libvpx --enable-libopenmpt --enable-nonfree --enable-gpl --enable-libx264"
 	fi
 
 	# not an autotools configure
