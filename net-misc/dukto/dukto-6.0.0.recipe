@@ -5,7 +5,7 @@ about users, permissions, operating systems, protocols, clients, servers and \
 so on… Just start Dukto on the two PCs and transfer files and folders by \
 dragging onto it’s window. That’s all."
 HOMEPAGE="https://www.msec.it/blog/dukto/"
-COPYRIGHT="Copyright (C) 2011 Emanuele Colombo"
+COPYRIGHT="2011 Emanuele Colombo"
 LICENSE="GNU GPL v2"
 REVISION="1"
 SOURCE_URI="https://codeload.github.com/ttys3/dukto/zip/00301800b3a645b80361a59de911839bf49ee32e"
@@ -18,7 +18,7 @@ SECONDARY_ARCHITECTURES="x86"
 
 PROVIDES="
 	dukto$secondaryArchSuffix = $portVersion
-	app:Dukto$secondaryArchSuffix = $portVersion
+	app:Dukto
 	"
 REQUIRES="
 	haiku$secondaryArchSuffix
@@ -63,5 +63,5 @@ INSTALL()
 	cp dukto $appsDir/Dukto
 
 	mkdir -p $dataDir/deskbar/menu/Applications
-	addAppDeskbarSymlink "$appsDir/Dukto" "Dukto"
+	addAppDeskbarSymlink "$appsDir/Dukto"
 }
