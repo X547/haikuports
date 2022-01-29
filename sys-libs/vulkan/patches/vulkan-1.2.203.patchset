@@ -1,8 +1,16 @@
-From 7079185366d6b93b92206e8cf9f4be60809d0872 Mon Sep 17 00:00:00 2001
+From 9d408040e50620878c0c8f4e475988677061dd7d Mon Sep 17 00:00:00 2001
 From: X512 <danger_mail@list.ru>
 Date: Mon, 4 Oct 2021 03:12:53 +0900
 Subject: basic fixes for haiku
 
+---
+ CMakeLists.txt              | 2 +-
+ loader/allocation.h         | 4 ++--
+ loader/get_environment.c    | 4 ++--
+ loader/get_environment.h    | 2 +-
+ loader/loader.h             | 3 ++-
+ loader/vk_loader_platform.h | 6 +++---
+ 6 files changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index eba079c..7eae8d5 100644
@@ -34,7 +42,7 @@ index 6c84050..2a5ecec 100644
 \ No newline at end of file
 +#endif  // defined(_WIN32)
 diff --git a/loader/get_environment.c b/loader/get_environment.c
-index bf878da..fcf924d 100644
+index bf878da..12c5a4d 100644
 --- a/loader/get_environment.c
 +++ b/loader/get_environment.c
 @@ -37,7 +37,7 @@
@@ -46,12 +54,7 @@ index bf878da..fcf924d 100644
  
  bool is_high_integrity() { return geteuid() != getuid() || getegid() != getgid(); }
  
-@@ -45,11 +45,12 @@ char *loader_getenv(const char *name, const struct loader_instance *inst) {
-     // No allocation of memory necessary for Linux, but we should at least touch
-     // the inst pointer to get rid of compiler warnings.
-     (void)inst;
-+    return NULL;
-     return getenv(name);
+@@ -49,7 +49,7 @@ char *loader_getenv(const char *name, const struct loader_instance *inst) {
  }
  
  char *loader_secure_getenv(const char *name, const struct loader_instance *inst) {
@@ -60,18 +63,24 @@ index bf878da..fcf924d 100644
      // Apple does not appear to have a secure getenv implementation.
      // The main difference between secure getenv and getenv is that secure getenv
      // returns NULL if the process is being run with elevated privileges by a normal user.
-@@ -169,4 +170,4 @@ void loader_free_getenv(char *val, const struct loader_instance *inst) {
-     (void)inst;
- }
+diff --git a/loader/get_environment.h b/loader/get_environment.h
+index 0da7286..2e8f91f 100644
+--- a/loader/get_environment.h
++++ b/loader/get_environment.h
+@@ -35,7 +35,7 @@
+ char *loader_getenv(const char *name, const struct loader_instance *inst);
+ void loader_free_getenv(char *val, const struct loader_instance *inst);
  
--#endif
-\ No newline at end of file
-+#endif
+-#if defined(WIN32) || defined(__linux__) || defined(__APPLE__) || defined(__Fuchsia__) || defined(__QNXNTO__) || defined(__FreeBSD__)
++#if defined(WIN32) || defined(__linux__) || defined(__APPLE__) || defined(__Fuchsia__) || defined(__QNXNTO__) || defined(__FreeBSD__) || defined(__HAIKU__)
+ 
+ bool is_high_integrity();
+ 
 diff --git a/loader/loader.h b/loader/loader.h
-index cfebfba..fe150ae 100644
+index 5700d15..3143420 100644
 --- a/loader/loader.h
 +++ b/loader/loader.h
-@@ -55,12 +55,13 @@ static inline struct loader_instance_dispatch_table *loader_get_instance_dispatc
+@@ -64,12 +64,13 @@ static inline struct loader_instance_dispatch_table *loader_get_instance_dispatc
  }
  
  static inline void loader_init_dispatch(void *obj, const void *data) {
@@ -86,13 +95,6 @@ index cfebfba..fe150ae 100644
      loader_set_dispatch(obj, data);
  }
  
-@@ -161,4 +162,4 @@ VkResult setup_loader_term_phys_devs(struct loader_instance *inst);
- VkStringErrorFlags vk_string_validate(const int max_length, const char *char_array);
- char *loader_get_next_path(char *path);
- VkResult add_data_files_in_path(const struct loader_instance *inst, char *search_path, bool is_directory_list,
--                                struct loader_data_files *out_files, bool use_first_found_manifest);
-\ No newline at end of file
-+                                struct loader_data_files *out_files, bool use_first_found_manifest);
 diff --git a/loader/vk_loader_platform.h b/loader/vk_loader_platform.h
 index 507a901..40c84d7 100644
 --- a/loader/vk_loader_platform.h
